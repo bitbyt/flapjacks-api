@@ -1,7 +1,7 @@
 {
   "name": "flapjacks-api",
   "version": "1.0.0",
-  "description": "Simpleserver side API for Flapjacks project",
+  "description": "Simple server side API for Flapjacks project",
   "main": "app.js",
   "scripts": {
     "start": "nodemon app",
