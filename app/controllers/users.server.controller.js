@@ -17,12 +17,16 @@ module.exports = {
   },
   show: function(req, res) {
     User.findOne({ username: req.params.id }, function(err, user) {
-      if (err)
-          res.send(err);
+      if (err) return next(err);
       res.json(user);
     });
   },
   update: function(req, res) {
+    var username = req.params.id;
+    User.findByIdAndUpdate(username, req.body, function(err, user) {
+      if (err) return next(err);
+      res.json(user);
+    });
   },
   destroy: function(req, res, next) {
     User.remove({ username: req.params.id }, function(err, user) {
