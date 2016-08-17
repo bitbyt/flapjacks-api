@@ -7,11 +7,45 @@ module.exports = {
       res.json(users)
     });
   },
+  signup: function(req, res) {
+    res.send(req.body);
+
+    var userObject = req.body;
+    var newUser = new User(userObject);
+
+    newUser.save(function(err, user) {
+      if (err) return res.status(4000).send(err);
+
+      return res.status(200).send({
+        message: 'User created'
+      });
+    });
+  },
+  login: function(req, res) {
+    var loggedInUser = req.body;
+
+    User.findOne(loggedInUser, function(err, foundUser) {
+        if(err) return res.status(400).send();
+
+        if(foundUser) {
+          return res.status(200).send({ message: 'login success' });
+        } else {
+          return res.status(400).send({ message: 'login failed' });
+        }
+
+      });
+  },
   create: function(req, res, next) {
     var user = new User(req.body);
     console.log(req.body);
     user.save(function(err) {
-      if (err) return next(err);
+      if (err) {
+        console.log('error message is: ' + err.errors.email.message);
+        var errMessage = {
+          "message":  err.errors.email.message,
+          "status_code": 400
+        }
+      } return res.status(400).send(errMessage);
       res.json(user)
     });
   },
