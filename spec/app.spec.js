@@ -3,16 +3,7 @@ var request = require("request");
 var supertest = require("supertest");
 
 describe("Express Server", function() {
-  describe("GET /", function() {
-    it("returns status code 200", function(done) {
-      console.log("in get/ test");
-      supertest(app)
-        .get('/')
-        .set('Accept', 'text/html')
-        .expect('Content-Type', /html/)
-        .expect(200, done); // note that we're passing the done as parameter to the expect
-    });
-
+  describe("GET /users", function() {
     it("returns status code 200 for /users/sabrina", function(done) {
       console.log("in /users/heysabs test");
       supertest(app)
@@ -22,16 +13,19 @@ describe("Express Server", function() {
         .expect(200, done); // note that we're passing the done as parameter to the expect
     });
 
-    it("returns the correct data for /users/jonathan", function(done) {
+    it("returns the correct data for /users/heysabs", function(done) {
       console.log("in /users/heysabs test");
       supertest(app)
         .get('/users/heysabs')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200, {
+          "_id":"57b2cd2b522b0655506ea20a",
           "username":"heysabs",
           "email":"heysabs@gmail.com",
-          "website":"http://djsabrina.com"
+          "website":"http://djsabrina.com",
+          "__v":0,
+          "created_at":"2016-08-16T08:22:03.239Z"
         }, done);
     });
 
@@ -45,26 +39,4 @@ describe("Express Server", function() {
         done();
     });
   });
-
-  // describe("GET /about", function() {
-  //   it("returns status code 200", function(done) {
-  //     request.get(base_url + 'about',
-  //       function(err, response, body) {
-  //         expect(response.statusCode).toBe(200);
-  //         done();
-  //       }
-  //     );
-  //   });
-  // });
-  //
-  // describe("GET /contact", function() {
-  //   it("returns status code 200", function(done) {
-  //     request.get(base_url + 'contact',
-  //       function(err, response, body) {
-  //         expect(response.statusCode).toBe(200);
-  //         done();
-  //       }
-  //     );
-  //   });
-  // });
 });

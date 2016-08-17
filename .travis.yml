@@ -1,3 +1,10 @@
 language: node_js
 node_js:
 - node
+deploy:
+  provider: heroku
+  api_key:
+    secure: TZWu+8KbZHmF56JH1DQPXO2R5QYRqqTJuMEdCW+EVxhVFqGUs9Iy+uyrMtp3LIDXJqnbFOcW7sWXa6a7wHcaxemdXTBEyCg2CMHL88+fACi7Ee68AScKT+hmH1RnEkvX7imI6cDUFwEhYz8BRmASU1RkZTbXHB0AIj4EyzmqgImlhrpmdpwAy5xsvG+JFS5/NLSv13ih5FzTTr95TS6ZUq6y2i59E+NwfDXHL+9Qy5lU4WKjCunoxQ0Y9R6nUvWpHuunUqyWzLVBEguaufS+GsHszGgkVSiPe0m5AGC6sq3xiKFbYJJ743ZFAPFUitc3c63cvB5YKtqvQkzRWkDWwkhdrgwMF0Ge8xZiL9UepUf13ldf5BbYd1VKdLoSaUIYmRpXc2bFc3X7OG04uIG8BfeMcTmXsJPR9zQwksQatsFY1PJvb+LOhpCpbQ7+LjP7yMIzOhPuLCpmgcBE5lWBvFFPp0hdV3ygJd1nkGs6vfSRcM6YPqoFWLCBSBqrRxAWZ3LclaD8noL4UsvXuKg06+0EYbAwIeSyNi3IuAPxSe6C73fHmUUMfhrTsNMWksqUldjX9P5PYU/+mHhYMcqUTOCw2FR7RfXkRepLdlQ6+ug1iSBlSA/Ddg5vRlv+47/kC8D5Vhw9jVr6+ckymgQqDdrXe87A65TX7csWUF52lSo=
+  app: infinite-castle-39557
+  on:
+    repo: bitbyt/flapjacks-api
