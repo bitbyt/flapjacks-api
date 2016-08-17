@@ -25,7 +25,11 @@ module.exports = {
     var username = req.params.id;
     User.findByIdAndUpdate(username, req.body, function(err, user) {
       if (err) return next(err);
-      res.json(user);
+
+      User.findOne({ _id: username },function(err, user) {
+        if (err) return next(err);
+        res.json(user);
+      });
     });
   },
   destroy: function(req, res, next) {

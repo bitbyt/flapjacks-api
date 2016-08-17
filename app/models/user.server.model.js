@@ -25,22 +25,38 @@ var userSchema = new Schema({
         return url;
       }
     }
-  },
-  created_at: {
-    type: Date,
-    default: Date.now
   }
+}, {
+  timestamps: {}
 });
 
 //register a virtual attribute
-userSchema.virtual('fullName').get(function(){
+userSchema.virtual('fullName')
+.get(function(){
   return this.firstName + ' ' + this.lastName;
+})
+.set(function(fullName) {
+  var splitName = fullName.split(" ");
+  this.firstName = splitName[0];
+  this.lastName = splitName[1];
 });
+
+//search by name
+userSchema.query = {
+  byName: function(name) {
+    return this.find({
+      $or: [
+        {firstName: new RegExp(name , 'i')},
+        {lastName: new RegExp(name , 'i')}
+      ]
+    });
+  }
+}
 
 //register the modifiers
 userSchema.set('toJson', { getters: true, virtuals: true });
 
-
+//register the schema
 var User = mongoose.model('User', userSchema);
 
 module.exports = User;
