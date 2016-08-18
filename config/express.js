@@ -18,7 +18,7 @@ module.exports = function() {
 
   app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Header", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
     next();
   });
 
@@ -27,7 +27,7 @@ module.exports = function() {
     extended: true
   }));
 
-  app.use(expressJWT({ secret: config.jwtSecret }).unless({ path: [ 'api/signup', 'api/login', { url: '/api/events', methods: ['GET']} ] }));
+  app.use(expressJWT({ secret: config.jwtSecret }).unless({ path: [ '/signup', '/login', { url: '/api/events', methods: ['GET']} ] }));
 
   app.use(methodOverride());
 

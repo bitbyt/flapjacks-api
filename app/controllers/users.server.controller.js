@@ -10,13 +10,13 @@ module.exports = {
     });
   },
   signup: function(req, res) {
-    res.send(req.body);
+    //res.send(req.body);
 
     var userObject = req.body;
     var newUser = new User(userObject);
 
     newUser.save(function(err, user) {
-      if (err) return res.status(4000).send(err);
+      if (err) return res.status(400).send(err);
 
       return res.status(200).send({
         message: 'User created'

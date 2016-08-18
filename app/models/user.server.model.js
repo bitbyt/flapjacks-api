@@ -44,16 +44,20 @@ var userSchema = new Schema({
 });
 
 //pre save middleware
-userSchema.pre('save', function(){
-  //encrypt passwords
+userSchema.pre('save', function(next) {
   var user = this;
-  var saltRounds = 5;
-  //generate the bcrypt salt
-  bcrypt.genSalt(saltRounds, function(err, salt) {
+
+  // Generate a salt, with a salt_work_factor of 5
+  bcrypt.genSalt(5, function(err, salt) {
     if (err) return next(err);
 
+    if (!user.isModified('password')) return next();
+
+    // Hash the password using our new salt
     bcrypt.hash(user.password, salt, function(err, hash) {
-      //store has in your password BD
+      if (err) return next(err);
+
+      // Override the cleartext password with the hashed one
       user.password = hash;
       next();
     });
