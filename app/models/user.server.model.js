@@ -1,4 +1,5 @@
 var mongoose = require('mongoose'),
+    bcrypt = require('bcrypt'),
     Schema = mongoose.Schema;
 
 var userSchema = new Schema({
@@ -16,7 +17,13 @@ var userSchema = new Schema({
   },
   password: {
     type: String,
-    required: true
+    required: true,
+    validate: [
+      function(password) {
+        return password.length >= 6;
+      },
+      'Password is too short'
+    ]
   },
   website: {
     type: String,
@@ -35,6 +42,29 @@ var userSchema = new Schema({
 }, {
   timestamps: {}
 });
+
+//pre save middleware
+userSchema.pre('save', function(){
+  //encrypt passwords
+  var user = this;
+  var saltRounds = 5;
+  //generate the bcrypt salt
+  bcrypt.genSalt(saltRounds, function(err, salt) {
+    if (err) return next(err);
+
+    bcrypt.hash(user.password, salt, function(err, hash) {
+      //store has in your password BD
+      user.password = hash;
+      next();
+    });
+  });
+});
+
+userSchema.methods.authenticate = function(postedPassword, callback) {
+  bcrypt.compare(postedPassword, this.password, function(err, isMatch) {
+    callback(null, isMatch);
+  });
+}
 
 //register a virtual attribute
 userSchema.virtual('fullName')
@@ -57,7 +87,7 @@ userSchema.query = {
       ]
     });
   }
-}
+};
 
 //register the modifiers
 userSchema.set('toJson', { getters: true, virtuals: true });

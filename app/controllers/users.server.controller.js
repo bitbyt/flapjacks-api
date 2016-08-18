@@ -1,4 +1,6 @@
 var User = require('mongoose').model('User');
+var config = require('../../config/config');
+var jwt = require('jsonwebtoken');
 
 module.exports = {
   index: function(req, res, next) {
@@ -24,14 +26,47 @@ module.exports = {
   login: function(req, res) {
     var loggedInUser = req.body;
 
-    User.findOne(loggedInUser, function(err, foundUser) {
-        if(err) return res.status(400).send();
+    User.findOne(
+      { email: loggedInUser.email },
+      function(err, foundUser) {
+      // this is error find flow
+      if (err) return res.status(400).send(err);
+      if(foundUser) {
+        foundUser.authenticate(loggedInUser.password, function(err, isMatch) {
+          // console.log('password comparison is: ', isMatch);
+          if (isMatch) {
+            // return res.status(200).send({message: "Valid credentials !"});
+            var payload = {
+              id: foundUser.id,
+              email: foundUser.email
+            };
+            var expiryObj = {
+              exp: 60 * 3
+            }
+            var jwtToken = jwt.sign(payload, config.jwtSecret, expiryObj);
 
-        if(foundUser) {
-          return res.status(200).send({ message: 'login success' });
-        } else {
-          return res.status(400).send({ message: 'login failed' });
-        }
+            return res.status(200).send(jwtToken);
+          } else {
+            return res.status(401).send({message: "Login failed"});
+          };
+        });
+      } else {
+        return res.status(400).send({ message: 'User not found' });
+      }
+    // loggedInUser, function(err, foundUser) {
+    //     if(err) return res.status(400).send();
+
+        // if(foundUser) {
+        //   var payload = foundUser.id;
+        //   var expiryObj = {
+        //     expiryInMinutes: 320
+        //   };
+        //   var jwtToken = jwt.sign(payload, config.jwtSecret, expiryObj);
+        //
+        //   return res.status(200).send(jwtToken);
+        // } else {
+        //   return res.status(400).send({ message: 'login failed' });
+        // }
 
       });
   },

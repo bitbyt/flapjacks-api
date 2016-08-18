@@ -3,7 +3,9 @@ var express = require('express'),
     compress = require('compression'),
     bodyParser = require('body-parser'),
     methodOverride = require('method-override'),
-    expressLayouts = require('express-ejs-layouts');
+    expressLayouts = require('express-ejs-layouts'),
+    expressJWT = require('express-jwt'),
+    config = require('./config');
 
 module.exports = function() {
   var app = express();
@@ -14,10 +16,18 @@ module.exports = function() {
     app.use(compress());
   };
 
+  app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Header", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    next();
+  });
+
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({
     extended: true
   }));
+
+  app.use(expressJWT({ secret: config.jwtSecret }).unless({ path: [ 'api/signup', 'api/login', { url: '/api/events', methods: ['GET']} ] }));
 
   app.use(methodOverride());
 
@@ -25,8 +35,7 @@ module.exports = function() {
   app.set('view engine', 'ejs');
   app.use(expressLayouts);
 
-  require('../app/routes/user.server.routes')(app);
-  require('../app/routes/event.server.routes')(app);
+  require('../app/routes/routes')(app);
 
   app.use(express.static('./public'));
 
